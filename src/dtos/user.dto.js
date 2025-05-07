@@ -14,22 +14,13 @@ export const bodyToUser = (body) => {
   };
 
   export const responseFromUser = ({ user, preferences }) => {
-    const u = user[0]; // user는 배열이므로 첫 번째 값만 추출
+    const preferFoods = preferences.map(
+      (preference) => preference.foodCategory.name
+    );
   
     return {
-      id: u.id,
-      email: u.email,
-      name: u.name,
-      gender: u.gender,
-      birth: u.birth.toISOString().split('T')[0], // 날짜 포맷 YYYY-MM-DD
-      address: u.address,
-      detailAddress: u.detail_address,
-      phoneNumber: u.phone_number,
-      preferences: preferences.map((pref) => ({
-        id: pref.id,
-        foodCategoryId: pref.food_category_id,
-        userId: pref.user_id,
-        name: pref.name,
-      })),
+      email: user.email,
+      name: user.name,
+      preferCategory: preferFoods,
     };
   };

@@ -1,5 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import { challengeMission } from "../services/challenge.service.js";
+import { prisma } from "../db.config.js";
 
 export const handleChallengeMission = async (req, res, next) => {
   try {

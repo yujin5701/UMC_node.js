@@ -1,27 +1,42 @@
 import { pool } from "../db.config.js";
+import { prisma } from "../db.config.js";
 
 // 가게 존재 여부 확인
 export const getStoreById = async (storeId) => {
-    const conn = await pool.getConnection();
-    try {
-        const [rows] = await conn.query("SELECT * FROM store WHERE id = ?;", [storeId]);
-        return rows[0] || null;
-    } finally {
-        conn.release();
-    }
-};
+    return await prisma.store.findUnique({
+      where: { id: storeId },
+    });
+  };
+  
+  // 리뷰 삽입
+  export const insertReview = async ({ storeId, userId, body, score }) => {
+    const result = await prisma.review.create({
+      data: {
+        store_id: storeId,
+        user_id: userId,
+        body,
+        score,
+      },
+    });
+    return result.id;
+  };
 
-// 리뷰 삽입
-export const insertReview = async ({ storeId, userId, body, score }) => {
-    const conn = await pool.getConnection();
-    try {
-        const [result] = await conn.query(
-            `INSERT INTO review (user_id, store_id, body, score)
-            VALUES (?, ?, ?, ?);`,
-            [userId, storeId, body, score]
-        );
-        return result.insertId;
-    } finally {
-        conn.release();
-    }
-}
+  // 내가 작성한 리뷰 목록
+export const getReviewsByUserId = async (userId) => {
+    return await prisma.review.findMany({
+      where: { user_id: userId },
+      include: {
+        store: {
+          select: {
+            id: true,
+            name: true,
+            address: true,
+          },
+        },
+      },
+      orderBy: {
+        id: "desc",
+      },
+    });
+  };
+  

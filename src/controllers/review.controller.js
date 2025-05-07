@@ -1,5 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import { createReview} from "../services/review.service.js";
+import { prisma } from "../db.config.js";
 
 export const handleCreateReview = async (req, res, next) => {
     try {

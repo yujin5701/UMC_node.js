@@ -1,4 +1,5 @@
 import { getRegionById, insertStore } from "../repositories/store.repository.js"
+import { prisma } from "../db.config.js";
 
 export const createStore = async (data) => {
     const region = await getRegionById(data.regionId);
@@ -14,3 +15,8 @@ export const createStore = async (data) => {
         regionId: data.regionId,
     };
 };
+
+export const listStoreReviews = async (storeId) => {
+    const reviews = await getAllStoreReviews(storeId);
+    return responseFromReviews(reviews);
+  };
