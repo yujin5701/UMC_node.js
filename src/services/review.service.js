@@ -14,9 +14,9 @@ export const createReview = async (storeId, reviewData) => {
     });
 
     return {
-        id: reviewId,
-        storeId,
-        userId: reviewData.userId,
+        id: Number(reviewId),
+        storeId: Number(storeId),
+        userId: Number(reviewData.userId),
         body: reviewData.body,
         score: reviewData.score,
     };

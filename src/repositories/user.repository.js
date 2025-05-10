@@ -1,4 +1,3 @@
-import { pool } from "../db.config.js";
 import { prisma } from "../db.config.js";
 
 // User 데이터 삽입
@@ -44,9 +43,7 @@ export const getUserPreferencesByUserId = async (userId) => {
   return preferences;
 };
 
-import { prisma } from "../db.config.js";
-
-export const getAllStoreReviews = async (storeId) => {
+export const getAllStoreReviews = async (storeId, cursor = 0) => {
   const reviews = await prisma.userStoreReview.findMany({
     select: { id: true, content: true, store: true, user: true },
     where: { storeId: storeId, id: { gt: cursor } },

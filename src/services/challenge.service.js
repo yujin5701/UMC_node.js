@@ -12,7 +12,7 @@ export const challengeMission = async (userId, missionId) => {
   const challengeId = await insertMissionChallenge(userId, missionId);
 
   return {
-    id: challengeId,
+    id: Number(challengeId),
     userId,
     missionId,
     status: "진행중",

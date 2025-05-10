@@ -1,6 +1,5 @@
 import { StatusCodes } from "http-status-codes";
 import { createMission } from "../services/mission.service.js";
-import { prisma } from "../db.config.js";
 
 export const handleCreateMission = async (req, res, next) => {
   try {

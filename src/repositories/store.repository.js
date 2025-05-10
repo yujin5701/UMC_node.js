@@ -11,12 +11,14 @@ export const getRegionById = async (regionId) => {
 export const insertStore = async ({ regionId, name, address, score }) => {
   const result = await prisma.store.create({
     data: {
-      region_id: regionId,
+      region: {
+        connect: { id: regionId }, 
+      },
       name,
       address,
       score,
-      created_at: new Date(),
-      updated_at: new Date(),
+      createdAt: new Date(), 
+      updatedAt: new Date(),
     },
   });
   return result.id;

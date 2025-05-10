@@ -14,7 +14,7 @@ export const createMission = async (storeId, missionData) => {
   });
 
   return {
-    id: missionId,
+    id: Number(missionId), 
     storeId,
     reward: missionData.reward,
     deadline: missionData.deadline,

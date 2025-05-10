@@ -8,139 +8,143 @@ datasource db {
 }
 
 model User {
-  id              BigInt   @id @default(autoincrement()) @db.BigInt
-  email           String   @unique @db.VarChar(50)
-  name            String   @db.VarChar(20)
-  gender          String?  @db.VarChar(10)
-  birth           DateTime?
-  address         String?  @db.VarChar(40)
-  detail_address  String?  @db.VarChar(40)
-  status          String?  @db.VarChar(15)
-  inactive_date   DateTime?
-  social_type     String?  @db.VarChar(10)
-  created_at      DateTime? @db.DateTime(6)
-  updated_at      DateTime? @db.DateTime(6)
-  phone_number    String?  @db.VarChar(20)
+  id            BigInt   @id @default(autoincrement()) @db.BigInt
+  email         String   @unique @db.VarChar(50)
+  name          String   @db.VarChar(20)
+  gender        String?  @db.VarChar(10)
+  birth         DateTime?
+  address       String?  @db.VarChar(40)
+  detailAddress String?  @map("detail_address") @db.VarChar(40)
+  status        String?  @db.VarChar(15)
+  inactiveDate  DateTime? @map("inactive_date")
+  socialType    String?  @map("social_type") @db.VarChar(10)
+  createdAt     DateTime? @map("created_at") @db.DateTime(6)
+  updatedAt     DateTime? @map("updated_at") @db.DateTime(6)
+  phoneNumber   String?  @map("phone_number") @db.VarChar(20)
 
-  user_agree         UserAgree[]
-  user_prefer        UserPrefer[]
-  user_favor_category UserFavorCategory[]
-  user_mission       UserMission[]
-  reviews            Review[]
+  userAgree         UserAgree[]
+  userPrefer        UserPrefer[]
+  userFavorCategory UserFavorCategory[]
+  userMission       UserMission[]
+  reviews           Review[]
 }
 
 model UserAgree {
-  id         BigInt   @id @default(autoincrement()) @db.BigInt
-  user_id    BigInt?  @db.BigInt
-  terms_id   BigInt?  @db.BigInt
-  created_at DateTime @default(now()) @db.DateTime(6)
-  updated_at DateTime @default(now()) @updatedAt @db.DateTime(6)
+  id        BigInt   @id @default(autoincrement()) @db.BigInt
+  userId    BigInt?  @map("user_id") @db.BigInt
+  termsId   BigInt?  @map("terms_id") @db.BigInt
+  createdAt DateTime @map("created_at") @default(now()) @db.DateTime(6)
+  updatedAt DateTime @map("updated_at") @default(now()) @updatedAt @db.DateTime(6)
 
-  user   User?   @relation(fields: [user_id], references: [id])
-  terms  Terms?  @relation(fields: [terms_id], references: [id])
+  user  User?  @relation(fields: [userId], references: [id])
+  terms Terms? @relation(fields: [termsId], references: [id])
 }
 
 model Terms {
-  id         BigInt     @id @default(autoincrement()) @db.BigInt
-  user_agree UserAgree[]
+  id        BigInt     @id @default(autoincrement()) @db.BigInt
+  userAgree UserAgree[]
 }
 
 model FoodCategory {
-  id         BigInt         @id @default(autoincrement()) @db.BigInt
-  name       String?        @db.VarChar(15)
-  created_at DateTime       @default(now()) @db.DateTime(6)
-  updated_at DateTime       @default(now()) @updatedAt @db.DateTime(6)
+  id             BigInt             @id @default(autoincrement()) @db.BigInt
+  name           String?            @db.VarChar(15)
+  createdAt      DateTime           @map("created_at") @default(now()) @db.DateTime(6)
+  updatedAt      DateTime           @map("updated_at") @default(now()) @updatedAt @db.DateTime(6)
 
-  user_prefer        UserPrefer[]
-  user_favor_category UserFavorCategory[]
+  userPrefer        UserPrefer[]
+  userFavorCategory UserFavorCategory[]
 }
 
 model UserPrefer {
-  id          BigInt        @id @default(autoincrement()) @db.BigInt
-  user_id     BigInt?       @db.BigInt
-  category_id BigInt?       @db.BigInt
-  created_at  DateTime      @default(now()) @db.DateTime(6)
-  updated_at  DateTime      @default(now()) @updatedAt @db.DateTime(6)
+  id           BigInt        @id @default(autoincrement()) @db.BigInt
+  userId       BigInt?       @map("user_id") @db.BigInt
+  categoryId   BigInt?       @map("category_id") @db.BigInt
+  createdAt    DateTime      @map("created_at") @default(now()) @db.DateTime(6)
+  updatedAt    DateTime      @map("updated_at") @default(now()) @updatedAt @db.DateTime(6)
 
-  user         User?         @relation(fields: [user_id], references: [id])
-  food_category FoodCategory? @relation(fields: [category_id], references: [id])
+  user         User?         @relation(fields: [userId], references: [id])
+  foodCategory FoodCategory? @relation(fields: [categoryId], references: [id])
 }
 
 model Region {
-  id         BigInt   @id @default(autoincrement()) @db.BigInt
-  name       String?  @db.VarChar(20)
-  created_at DateTime @default(now()) @db.DateTime(6)
-  updated_at DateTime @default(now()) @updatedAt @db.DateTime(6)
+  id        BigInt   @id @default(autoincrement()) @db.BigInt
+  name      String?  @db.VarChar(20)
+  createdAt DateTime @map("created_at") @default(now()) @db.DateTime(6)
+  updatedAt DateTime @map("updated_at") @default(now()) @updatedAt @db.DateTime(6)
 
-  stores     Store[]
+  stores    Store[]
 }
 
 model Store {
-  id         BigInt   @id @default(autoincrement()) @db.BigInt
-  region_id  BigInt?  @db.BigInt
-  name       String?  @db.VarChar(50)
-  address    String?  @db.VarChar(50)
-  score      Float?
-  created_at DateTime @default(now()) @db.DateTime(6)
-  updated_at DateTime @default(now()) @updatedAt @db.DateTime(6)
+  id        BigInt   @id @default(autoincrement()) @db.BigInt
+  regionId  BigInt?  @map("region_id") @db.BigInt
+  name      String?  @db.VarChar(50)
+  address   String?  @db.VarChar(50)
+  score     Float?
+  createdAt DateTime @map("created_at") @default(now()) @db.DateTime(6)
+  updatedAt DateTime @map("updated_at") @default(now()) @updatedAt @db.DateTime(6)
 
-  region     Region?   @relation(fields: [region_id], references: [id])
-  missions   Mission[]
-  reviews    Review[]
+  region   Region?    @relation(fields: [regionId], references: [id])
+  missions Mission[]
+  reviews  Review[]
 }
 
 model Mission {
   id           BigInt   @id @default(autoincrement()) @db.BigInt
-  store_id     BigInt?  @db.BigInt
+  storeId      BigInt?  @map("store_id") @db.BigInt
   reward       Int?
   deadline     DateTime?
-  mission_spec String?
-  created_at   DateTime @default(now()) @db.DateTime(6)
-  updated_at   DateTime @default(now()) @updatedAt @db.DateTime(6)
+  missionSpec  String?  @map("mission_spec")
+  createdAt    DateTime @map("created_at") @default(now()) @db.DateTime(6)
+  updatedAt    DateTime @map("updated_at") @default(now()) @updatedAt @db.DateTime(6)
 
-  store        Store?         @relation(fields: [store_id], references: [id])
-  user_mission UserMission[]
+  store        Store?         @relation(fields: [storeId], references: [id])
+  userMission  UserMission[]
 }
 
 model UserMission {
-  id          BigInt   @id @default(autoincrement()) @db.BigInt
-  user_id     BigInt?  @db.BigInt
-  mission_id  BigInt?  @db.BigInt
-  status      String?  @db.VarChar(15)
-  created_at  DateTime @default(now()) @db.DateTime(6)
-  updated_at  DateTime @default(now()) @updatedAt @db.DateTime(6)
+  id         BigInt   @id @default(autoincrement()) @db.BigInt
+  userId     BigInt?  @map("user_id") @db.BigInt
+  missionId  BigInt?  @map("mission_id") @db.BigInt
+  status     String?  @db.VarChar(15)
+  createdAt  DateTime @map("created_at") @default(now()) @db.DateTime(6)
+  updatedAt  DateTime @map("updated_at") @default(now()) @updatedAt @db.DateTime(6)
 
-  user    User?    @relation(fields: [user_id], references: [id])
-  mission Mission? @relation(fields: [mission_id], references: [id])
+  user    User?    @relation(fields: [userId], references: [id])
+  mission Mission? @relation(fields: [missionId], references: [id])
 }
 
 model Review {
-  id         BigInt   @id @default(autoincrement()) @db.BigInt
-  user_id    BigInt?  @db.BigInt
-  store_id   BigInt?  @db.BigInt
-  body       String?
-  score      Float?
+  id        BigInt   @id @default(autoincrement()) @db.BigInt
+  userId    BigInt?  @map("user_id") @db.BigInt
+  storeId   BigInt?  @map("store_id") @db.BigInt
+  body      String?
+  score     Float?
 
-  user       User?   @relation(fields: [user_id], references: [id])
-  store      Store?  @relation(fields: [store_id], references: [id])
-  images     ReviewImage[]
+  user      User?   @relation(fields: [userId], references: [id])
+  store     Store?  @relation(fields: [storeId], references: [id])
+  images    ReviewImage[]
 }
 
 model ReviewImage {
-  id         BigInt   @id @default(autoincrement()) @db.BigInt
-  review_id  BigInt?  @db.BigInt
-  image_url  String?
-  created_at DateTime @default(now()) @db.DateTime(6)
-  updated_at DateTime @default(now()) @updatedAt @db.DateTime(6)
+  id        BigInt   @id @default(autoincrement()) @db.BigInt
+  reviewId  BigInt?  @map("review_id") @db.BigInt
+  imageUrl  String?  @map("image_url")
+  createdAt DateTime @map("created_at") @default(now()) @db.DateTime(6)
+  updatedAt DateTime @map("updated_at") @default(now()) @updatedAt @db.DateTime(6)
 
-  review     Review?  @relation(fields: [review_id], references: [id])
+  review    Review?  @relation(fields: [reviewId], references: [id])
 }
 
 model UserFavorCategory {
-  id               BigInt       @id @default(autoincrement()) @db.BigInt
-  food_category_id BigInt       @db.BigInt
-  user_id          BigInt       @db.BigInt
+  id             BigInt       @id @default(autoincrement()) @db.BigInt
+  foodCategoryId BigInt       @map("food_category_id") @db.BigInt
+  userId         BigInt       @map("user_id") @db.BigInt
+  createdAt      DateTime     @map("created_at") @default(now()) @db.DateTime(6)
+  updatedAt      DateTime     @map("updated_at") @default(now()) @updatedAt @db.DateTime(6)
 
-  food_category    FoodCategory @relation(fields: [food_category_id], references: [id])
-  user             User         @relation(fields: [user_id], references: [id])
+  foodCategory   FoodCategory @relation(fields: [foodCategoryId], references: [id])
+  user           User         @relation(fields: [userId], references: [id])
+
+  @@map("user_favor_category")
 }

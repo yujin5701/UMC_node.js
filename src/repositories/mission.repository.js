@@ -11,12 +11,12 @@ export const getStoreById = async (storeId) => {
 export const insertMission = async ({ storeId, reward, deadline, missionSpec }) => {
   const result = await prisma.mission.create({
     data: {
-      store_id: storeId,
+      store: { connect: { id: storeId } },
       reward,
-      deadline: new Date(deadline),
-      mission_spec: missionSpec,
-      created_at: new Date(),
-      updated_at: new Date(),
+      deadline: new Date(deadline), 
+      missionSpec: missionSpec,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
   });
   return result.id;

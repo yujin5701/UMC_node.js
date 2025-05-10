@@ -1,4 +1,3 @@
-import { pool } from "../db.config.js";
 import { prisma } from "../db.config.js";
 
 // 가게 존재 여부 확인
@@ -12,8 +11,8 @@ export const getStoreById = async (storeId) => {
   export const insertReview = async ({ storeId, userId, body, score }) => {
     const result = await prisma.review.create({
       data: {
-        store_id: storeId,
-        user_id: userId,
+        store: { connect: { id: storeId } },
+        user: { connect: { id: userId } },
         body,
         score,
       },

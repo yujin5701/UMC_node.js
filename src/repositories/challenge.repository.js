@@ -2,10 +2,10 @@ import { prisma } from "../db.config.js";
 
 // 중복 도전 여부 확인
 export const getChallengeByUserAndMission = async (userId, missionId) => {
-  return await prisma.user_mission.findFirst({
+  return await prisma.userMission.findFirst({
     where: {
-      user_id: userId,
-      mission_id: missionId,
+      userId: userId,
+      missionId: missionId,
       status: "진행중",
     },
   });
@@ -13,13 +13,13 @@ export const getChallengeByUserAndMission = async (userId, missionId) => {
 
 // 도전 등록
 export const insertMissionChallenge = async (userId, missionId) => {
-  const result = await prisma.user_mission.create({
+  const result = await prisma.userMission.create({
     data: {
-      user_id: userId,
-      mission_id: missionId,
+      userId: userId,
+      missionId: missionId,
       status: "진행중",
-      created_at: new Date(),
-      updated_at: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
   });
   return result.id;
@@ -27,9 +27,9 @@ export const insertMissionChallenge = async (userId, missionId) => {
 
 // 내가 진행 중인 미션 목록
 export const getInProgressMissionsByUserId = async (userId) => {
-  return await prisma.user_mission.findMany({
+  return await prisma.userMission.findMany({
     where: {
-      user_id: userId,
+      userId: userId,
       status: "진행중",
     },
     include: {
@@ -46,18 +46,18 @@ export const getInProgressMissionsByUserId = async (userId) => {
       },
     },
     orderBy: {
-      created_at: "desc",
+      createdAt: "desc",
     },
   });
 };
 
 // 미션 완료로 상태 변경
 export const completeMission = async (userMissionId) => {
-  return await prisma.user_mission.update({
+  return await prisma.userMission.update({
     where: { id: userMissionId },
     data: {
       status: "완료", // 또는 "completed" 등으로 맞춰서
-      updated_at: new Date(),
+      updatedAt: new Date(),
     },
   });
 };
