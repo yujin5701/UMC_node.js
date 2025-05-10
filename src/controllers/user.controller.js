@@ -13,7 +13,7 @@ export const handleUserSignUp = async (req, res, next) => {
         const user = await userSignUp(bodyToUser(req.body)); // DTO로 변환
         res.status(StatusCodes.OK).success(user);
       } catch (err) {
-        res.status(StatusCodes.BAD_REQUEST).json({ message: err.message });
+        next(err);
       }
     };
   

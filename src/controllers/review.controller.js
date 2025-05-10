@@ -8,6 +8,6 @@ export const handleCreateReview = async (req, res, next) => {
         const review = await createReview(storeId, req.body);
         res.status(StatusCodes.CREATED).json({ result: review });
     } catch (err) {
-        res.status(StatusCodes.BAD_REQUEST).json({ message:err.message });
+        next(err);
     }
 };

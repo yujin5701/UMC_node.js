@@ -7,7 +7,7 @@ export const handleCreateStore = async (req, res, next) => {
         const store = await createStore(req.body);
         res.status(StatusCodes.CREATED).json({ result: store });
     } catch (err) {
-        res.status(StatusCodes.BAD_REQUEST).json({ message: err.message });
+        next(err);
     }
 };
 

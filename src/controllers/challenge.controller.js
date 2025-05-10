@@ -10,6 +10,6 @@ export const handleChallengeMission = async (req, res, next) => {
     const result = await challengeMission(userId, missionId);
     res.status(StatusCodes.CREATED).json({ result });
   } catch (err) {
-    res.status(StatusCodes.BAD_REQUEST).json({ message: err.message });
+    next(err);
   }
 };

@@ -7,6 +7,6 @@ export const handleCreateMission = async (req, res, next) => {
     const mission = await createMission(storeId, req.body);
     res.status(StatusCodes.CREATED).json({ result: mission });
   } catch (err) {
-    res.status(StatusCodes.BAD_REQUEST).json({ message: err.message });
+    next(err);
   }
 };

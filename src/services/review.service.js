@@ -1,9 +1,10 @@
 import { getStoreById, insertReview } from "../repositories/review.repository.js";
+import { CustomError } from "../errors.js";
 
 export const createReview = async (storeId, reviewData) => {
     const store = await getStoreById(storeId);
     if (!store) {
-        throw new Error("해당 가게가 존재하지 않습니다.");
+        throw new CustomError("해당 가게가 존재하지 않습니다.", 404);
     }
 
     const reviewId = await insertReview({
