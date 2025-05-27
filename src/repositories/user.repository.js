@@ -53,3 +53,11 @@ export const getAllStoreReviews = async (storeId, cursor = 0) => {
 
   return reviews;
 };
+
+export const updateUser = async (userId, updateData) => {
+  return await prisma.user.update({
+    where: { id: userId },
+    data: updateData,
+  });
+};
+

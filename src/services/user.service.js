@@ -31,3 +31,20 @@ export const userSignUp = async (data) => {
 
   return responseFromUser({ user, preferences });
 };
+
+import { updateUser as updateUserRepo } from "../repositories/user.repository.js";
+
+export const updateUser = async (userId, updateData) => {
+  // 유효성 검사 등 추가 가능
+  const updated = await updateUserRepo(userId, updateData);
+  return {
+    id: updated.id,
+    email: updated.email,
+    name: updated.name,
+    gender: updated.gender,
+    birth: updated.birth,
+    address: updated.address,
+    detailAddress: updated.detailAddress,
+    phoneNumber: updated.phoneNumber,
+  };
+};

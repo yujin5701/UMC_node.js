@@ -10,10 +10,22 @@ import { handleCreateMission } from "./controllers/mission.controller.js";
 import { handleChallengeMission } from "./controllers/challenge.controller.js";
 import { handleListStoreReviews } from "./controllers/store.controller.js";
 import fs from "fs";
+import { handleUpdateUser } from "./controllers/user.controller.js";
+import { PrismaSessionStore } from "@quixo3/prisma-session-store";
+import session from "express-session";
+import passport from "passport";
+import { googleStrategy } from "./auth.config.js";
+import { kakaoStrategy } from "./auth.config.js";
+import { prisma } from "./db.config.js";
+
 const swaggerFile = JSON.parse(fs.readFileSync("./swagger-output.json", "utf-8"));
 
 
 dotenv.config();
+passport.use(googleStrategy);
+passport.use(kakaoStrategy);
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((user, done) => done(null, user));
 
 const app = express();
 const port = process.env.PORT|| 3000;
@@ -25,6 +37,55 @@ app.use(
   "/docs",
   swaggerUiExpress.serve,
   swaggerUiExpress.setup(swaggerFile)
+);
+
+
+app.use(
+  session({
+    cookie: {
+      maxAge: 7 * 24 * 60 * 60 * 1000, // ms
+    },
+    resave: false,
+    saveUninitialized: false,
+    secret: process.env.EXPRESS_SESSION_SECRET,
+    store: new PrismaSessionStore(prisma, {
+      checkPeriod: 2 * 60 * 1000, // ms
+      dbRecordIdIsSessionId: true,
+      dbRecordIdFunction: undefined,
+    }),
+  })
+);
+
+
+
+app.use(cors()); // cors 방식 허용
+app.use(express.static("public")); // 정적 파일 접근
+app.use(express.json()); // request의 본문을 json으로 해석할 수 있도록 함 (JSON 형태의 요청 body를 파싱하기 위함)
+app.use(express.urlencoded({ extended: false })); // 단순 객체 문자열 형태로 본문 데이터 해석
+
+app.use(passport.session());
+
+app.get("/oauth2/login/google", passport.authenticate("google"));
+app.get(
+  "/oauth2/callback/google",
+  passport.authenticate("google", {
+    failureRedirect: "/oauth2/login/google",
+    failureMessage: true,
+  }),
+  (req, res) => res.redirect("/")
+);
+
+// 로그인 시작
+app.get("/oauth2/login/kakao", passport.authenticate("kakao"));
+
+// 로그인 콜백
+app.get(
+  "/oauth2/callback/kakao",
+  passport.authenticate("kakao", {
+    failureRedirect: "/oauth2/login/kakao",
+    failureMessage: true,
+  }),
+  (req, res) => res.redirect("/")
 );
 
 app.use((req, res, next) => {
@@ -42,13 +103,6 @@ app.use((req, res, next) => {
 
   next();
 });
-
-app.use(cors()); // cors 방식 허용
-app.use(express.static("public")); // 정적 파일 접근
-app.use(express.json()); // request의 본문을 json으로 해석할 수 있도록 함 (JSON 형태의 요청 body를 파싱하기 위함)
-app.use(express.urlencoded({ extended: false })); // 단순 객체 문자열 형태로 본문 데이터 해석
-
-
 app.post("/api/v1/users/signup", handleUserSignUp);
 
 /**
@@ -61,6 +115,8 @@ app.post("/api/v1/stores/:storeId/reviews", handleCreateReview);
 app.post("/api/v1/stores/:storeId/missions", handleCreateMission);
 app.post("/api/v1/missions/:missionId/challenges", handleChallengeMission);
 app.get("/api/v1/stores/:storeId/reviews", handleListStoreReviews);
+app.patch("/me", handleUpdateUser);
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

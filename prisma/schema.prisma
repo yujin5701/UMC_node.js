@@ -7,6 +7,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String   @db.VarChar(512)
+  expiresAt DateTime @map("expires_at")
+
+  @@map("session")
+}
+
 model User {
   id            BigInt   @id @default(autoincrement()) @db.BigInt
   email         String   @unique @db.VarChar(50)
